@@ -1,34 +1,34 @@
-question 1
+def read_and_modify_file():
+    # Ask user for filename
+    filename = input("Enter the name of the file to read: ")
 
-def calculate_discount(price, discount_percent):
-    # Check if the discount is 20% or higher
-    if discount_percent >= 20:
-        # Calculate the discount amount
-        discount_amount = price * (discount_percent / 100)
-        # Calculate the final price after applying the discount
-        final_price = price - discount_amount
-        return final_price
-    else:
-        # If discount is less than 20%, return the original price
-        return price
+    try:
+        # Try to open and read the file
+        with open(filename, 'r') as file:
+            content = file.read()
+        
+        # Modify the content (e.g., convert to uppercase)
+        modified_content = content.upper()
 
-# Prompt the user to enter the original price and discount percentage
-price = float(input("Enter the original price of the item: "))
-discount_percent = float(input("Enter the discount percentage: "))
+        # Create a new filename to write to
+        new_filename = "modified_" + filename
 
-# Calculate the final price using the function
-final_price = calculate_discount(price, discount_percent)
+        # Write the modified content to the new file
+        with open(new_filename, 'w') as new_file:
+            new_file.write(modified_content)
 
-# Print the result
-if final_price == price:
-    print(f"No discount applied. The original price is: ${final_price:.2f}")
-else:
-    print(f"After applying the discount, the final price is: ${final_price:.2f}")
-question 2
+        print(f"Modified content written to '{new_filename}'")
 
-Enter the original price of the item: 100
-Enter the discount percentage: 25
-After applying the discount, the final price is: $75.00
-Enter the original price of the item: 100
-Enter the discount percentage: 15
-No discount applied. The original price is: $100.00
+    except FileNotFoundError:
+        print("❌ Error: File not found.")
+    except PermissionError:
+        print("❌ Error: Permission denied when trying to read the file.")
+    except Exception as e:
+        print(f"❌ An unexpected error occurred: {e}")
+
+# Run the function
+read_and_modify_file()
+Enter the name of the file to read: notes.txt
+Modified content written to 'modified_notes.txt'
+Enter the name of the file to read: missing.txt
+❌ Error: File not found.
