@@ -1,34 +1,156 @@
-def read_and_modify_file():
-    # Ask user for filename
-    filename = input("Enter the name of the file to read: ")
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
 
-    try:
-        # Try to open and read the file
-        with open(filename, 'r') as file:
-            content = file.read()
+    <!-- Main Content -->
+    <div class="container">
+        <section class="main-content">
+            <h1>Main Content</h1>
+            <p>This is the main content area. It's flexible and will adjust based on screen size.</p>
+        </section>
         
-        # Modify the content (e.g., convert to uppercase)
-        modified_content = content.upper()
+        <section class="sidebar">
+            <h2>Sidebar</h2>
+            <p>This is a sidebar that will adjust depending on screen size.</p>
+        </section>
+    </div>
 
-        # Create a new filename to write to
-        new_filename = "modified_" + filename
+    <footer>
+        <p>© 2025 My Website</p>
+    </footer>
+</body>
+</html>
+/* General Reset and Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        # Write the modified content to the new file
-        with open(new_filename, 'w') as new_file:
-            new_file.write(modified_content)
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
 
-        print(f"Modified content written to '{new_filename}'")
+/* Navigation Bar Styles */
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+}
 
-    except FileNotFoundError:
-        print("❌ Error: File not found.")
-    except PermissionError:
-        print("❌ Error: Permission denied when trying to read the file.")
-    except Exception as e:
-        print(f"❌ An unexpected error occurred: {e}")
+.navbar ul {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+}
 
-# Run the function
-read_and_modify_file()
-Enter the name of the file to read: notes.txt
-Modified content written to 'modified_notes.txt'
-Enter the name of the file to read: missing.txt
-❌ Error: File not found.
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.navbar ul li a:hover {
+    background-color: #575757;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 2;
+    padding: 1rem;
+    background-color: #f4f4f4;
+    margin-right: 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    padding: 1rem;
+    background-color: #ddd;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Mobile (Up to 600px) */
+@media (max-width: 600px) {
+    .navbar ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+
+    .main-content, .sidebar {
+        margin: 0;
+        flex: 1;
+        width: 100%;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
+}
+
+/* Tablet (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .container {
+        flex-direction: row;
+    }
+
+    .main-content {
+        flex: 2;
+    }
+
+    .sidebar {
+        flex: 1;
+    }
+}
+
+/* Desktop (1025px and above) */
+@media (min-width: 1025px) {
+    .container {
+        flex-direction: row;
+    }
+
+    .main-content {
+        flex: 3;
+    }
+
+    .sidebar {
+        flex: 1;
+    }
+}
