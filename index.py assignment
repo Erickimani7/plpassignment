@@ -1,156 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Layout</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
+# Base class
+class Superhero:
+    def __init__(self, name, power, weakness):
+        self.name = name
+        self.power = power
+        self.weakness = weakness
 
-    <!-- Main Content -->
-    <div class="container">
-        <section class="main-content">
-            <h1>Main Content</h1>
-            <p>This is the main content area. It's flexible and will adjust based on screen size.</p>
-        </section>
-        
-        <section class="sidebar">
-            <h2>Sidebar</h2>
-            <p>This is a sidebar that will adjust depending on screen size.</p>
-        </section>
-    </div>
+    def introduce(self):
+        print(f"I am {self.name}, my power is {self.power} and my weakness is {self.weakness}.")
 
-    <footer>
-        <p>© 2025 My Website</p>
-    </footer>
-</body>
-</html>
-/* General Reset and Styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    def use_power(self):
+        print(f"{self.name} uses {self.power}!")
 
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
+# Derived class (inheritance)
+class FlyingHero(Superhero):
+    def __init__(self, name, power, weakness, flight_speed):
+        super().__init__(name, power, weakness)
+        self.flight_speed = flight_speed
 
-/* Navigation Bar Styles */
-.navbar {
-    background-color: #333;
-    color: white;
-    padding: 1rem;
-}
+    def use_power(self):
+        print(f"{self.name} flies at {self.flight_speed} mph using {self.power}!")
 
-.navbar ul {
-    display: flex;
-    justify-content: space-around;
-    list-style: none;
-}
+# Another derived class
+class StrengthHero(Superhero):
+    def __init__(self, name, power, weakness, strength_level):
+        super().__init__(name, power, weakness)
+        self.strength_level = strength_level
 
-.navbar ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem;
-}
+    def use_power(self):
+        print(f"{self.name} lifts {self.strength_level} tons with {self.power}!")
 
-.navbar ul li a:hover {
-    background-color: #575757;
-}
+# Test it
+hero1 = FlyingHero("SkyBolt", "Aerokinesis", "Storms", 600)
+hero2 = StrengthHero("Titan", "Super Strength", "Kryptonite", 100)
 
-/* Main Container */
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 2rem;
-}
+hero1.introduce()
+hero1.use_power()
 
-/* Main Content Area */
-.main-content {
-    flex: 2;
-    padding: 1rem;
-    background-color: #f4f4f4;
-    margin-right: 1rem;
-}
+hero2.introduce()
+hero2.use_power()
 
-/* Sidebar */
-.sidebar {
-    flex: 1;
-    padding: 1rem;
-    background-color: #ddd;
-}
+activity 2
+# Base class
+class Vehicle:
+    def move(self):
+        print("The vehicle moves.")
 
-/* Footer Styles */
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-}
+# Derived classes
+class Car(Vehicle):
+    def move(self):
+        print("Driving 🚗")
 
-/* Media Queries for Responsive Design */
+class Plane(Vehicle):
+    def move(self):
+        print("Flying ✈️")
 
-/* Mobile (Up to 600px) */
-@media (max-width: 600px) {
-    .navbar ul {
-        flex-direction: column;
-        align-items: center;
-    }
+class Boat(Vehicle):
+    def move(self):
+        print("Sailing 🚤")
 
-    .container {
-        flex-direction: column;
-    }
+# Demonstrating polymorphism
+vehicles = [Car(), Plane(), Boat()]
 
-    .main-content, .sidebar {
-        margin: 0;
-        flex: 1;
-        width: 100%;
-    }
-
-    footer {
-        font-size: 0.8rem;
-    }
-}
-
-/* Tablet (601px - 1024px) */
-@media (min-width: 601px) and (max-width: 1024px) {
-    .container {
-        flex-direction: row;
-    }
-
-    .main-content {
-        flex: 2;
-    }
-
-    .sidebar {
-        flex: 1;
-    }
-}
-
-/* Desktop (1025px and above) */
-@media (min-width: 1025px) {
-    .container {
-        flex-direction: row;
-    }
-
-    .main-content {
-        flex: 3;
-    }
-
-    .sidebar {
-        flex: 1;
-    }
-}
+for v in vehicles:
+    v.move()
