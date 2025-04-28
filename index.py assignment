@@ -1,65 +1,167 @@
-# Base class
-class Superhero:
-    def __init__(self, name, power, weakness):
-        self.name = name
-        self.power = power
-        self.weakness = weakness
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JS Event Assignment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    def introduce(self):
-        print(f"I am {self.name}, my power is {self.power} and my weakness is {self.weakness}.")
+  <h1>Welcome to My Interactive Page 🎉</h1>
 
-    def use_power(self):
-        print(f"{self.name} uses {self.power}!")
+  <!-- Button with event -->
+  <button id="magicButton">Click Me!</button>
 
-# Derived class (inheritance)
-class FlyingHero(Superhero):
-    def __init__(self, name, power, weakness, flight_speed):
-        super().__init__(name, power, weakness)
-        self.flight_speed = flight_speed
+  <!-- Image Gallery -->
+  <div class="gallery">
+    <img id="galleryImage" src="https://via.placeholder.com/300" alt="Gallery Image">
+  </div>
 
-    def use_power(self):
-        print(f"{self.name} flies at {self.flight_speed} mph using {self.power}!")
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-button" data-tab="1">Tab 1</button>
+    <button class="tab-button" data-tab="2">Tab 2</button>
+    <button class="tab-button" data-tab="3">Tab 3</button>
 
-# Another derived class
-class StrengthHero(Superhero):
-    def __init__(self, name, power, weakness, strength_level):
-        super().__init__(name, power, weakness)
-        self.strength_level = strength_level
+    <div class="tab-content" id="tab-1">This is content for Tab 1.</div>
+    <div class="tab-content" id="tab-2" style="display:none;">This is content for Tab 2.</div>
+    <div class="tab-content" id="tab-3" style="display:none;">This is content for Tab 3.</div>
+  </div>
 
-    def use_power(self):
-        print(f"{self.name} lifts {self.strength_level} tons with {self.power}!")
+  <!-- Form Validation -->
+  <form id="signupForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Sign Up</button>
+  </form>
 
-# Test it
-hero1 = FlyingHero("SkyBolt", "Aerokinesis", "Storms", 600)
-hero2 = StrengthHero("Titan", "Super Strength", "Kryptonite", 100)
+  <script src="script.js"></script>
+</body>
+</html>
 
-hero1.introduce()
-hero1.use_power()
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 30px;
+}
 
-hero2.introduce()
-hero2.use_power()
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+}
 
-activity 2
-# Base class
-class Vehicle:
-    def move(self):
-        print("The vehicle moves.")
+.gallery img {
+  width: 300px;
+  height: auto;
+  transition: transform 0.5s;
+}
 
-# Derived classes
-class Car(Vehicle):
-    def move(self):
-        print("Driving 🚗")
+.gallery img:hover {
+  transform: scale(1.1);
+}
 
-class Plane(Vehicle):
-    def move(self):
-        print("Flying ✈️")
+.tabs {
+  margin-top: 20px;
+}
 
-class Boat(Vehicle):
-    def move(self):
-        print("Sailing 🚤")
+.tab-button {
+  padding: 10px;
+}
 
-# Demonstrating polymorphism
-vehicles = [Car(), Plane(), Boat()]
+.tab-content {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
 
-for v in vehicles:
-    v.move()
+input {
+  display: block;
+  margin: 10px auto;
+  padding: 8px;
+  width: 200px;
+}
+
+// Event Handling
+const magicButton = document.getElementById('magicButton');
+magicButton.addEventListener('click', () => {
+  magicButton.textContent = "You clicked me!";
+  magicButton.style.backgroundColor = "#4CAF50";
+});
+
+// Hover Effect on Image (already handled in CSS)
+
+// Keypress Detection
+document.addEventListener('keydown', (e) => {
+  console.log(`You pressed: ${e.key}`);
+});
+
+// Bonus: Double Click Secret Action
+magicButton.addEventListener('dblclick', () => {
+  alert('✨ Secret double-click action unlocked!');
+});
+
+// Image Gallery Logic
+const galleryImage = document.getElementById('galleryImage');
+const galleryImages = [
+  "https://via.placeholder.com/300",
+  "https://via.placeholder.com/300/ff7f7f",
+  "https://via.placeholder.com/300/7fffd4"
+];
+let currentImage = 0;
+
+galleryImage.addEventListener('click', () => {
+  currentImage = (currentImage + 1) % galleryImages.length;
+  galleryImage.src = galleryImages[currentImage];
+});
+
+// Tabs
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const tab = button.getAttribute('data-tab');
+
+    tabContents.forEach(content => {
+      content.style.display = 'none';
+    });
+
+    document.getElementById(`tab-${tab}`).style.display = 'block';
+  });
+});
+
+// Form Validation
+const form = document.getElementById('signupForm');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault(); // Prevent form submission
+
+  const emailValid = emailInput.value.includes('@');
+  const passwordValid = passwordInput.value.length >= 8;
+
+  if (!emailValid) {
+    alert('Please enter a valid email.');
+    return;
+  }
+
+  if (!passwordValid) {
+    alert('Password must be at least 8 characters long.');
+    return;
+  }
+
+  alert('Form submitted successfully!');
+});
+
+// Real-time feedback for password
+passwordInput.addEventListener('input', () => {
+  if (passwordInput.value.length < 8) {
+    passwordInput.style.borderColor = 'red';
+  } else {
+    passwordInput.style.borderColor = 'green';
+  }
+});
