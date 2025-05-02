@@ -1,167 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JS Event Assignment</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+import requests
 
-  <h1>Welcome to My Interactive Page 🎉</h1>
+# Function to fetch weather data from OpenWeatherMap API
+def get_weather(city_name, api_key):
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&units=metric"
+    
+    # Send GET request to the OpenWeatherMap API
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        
+        # Extracting relevant weather details
+        city = data["name"]
+        country = data["sys"]["country"]
+        temperature = data["main"]["temp"]
+        humidity = data["main"]["humidity"]
+        condition = data["weather"][0]["description"]
+        
+        return {
+            "city": city,
+            "country": country,
+            "temperature": temperature,
+            "humidity": humidity,
+            "condition": condition
+        }
+    else:
+        return None
 
-  <!-- Button with event -->
-  <button id="magicButton">Click Me!</button>
+# Function to print the weather data
+def print_weather(data):
+    if data:
+        print(f"Weather in {data['city']}, {data['country']}:")
+        print(f"Temperature: {data['temperature']}°C")
+        print(f"Humidity: {data['humidity']}%")
+        print(f"Condition: {data['condition']}")
+    else:
+        print("City not found or invalid API request.")
 
-  <!-- Image Gallery -->
-  <div class="gallery">
-    <img id="galleryImage" src="https://via.placeholder.com/300" alt="Gallery Image">
-  </div>
+# Main program to interact with the user
+def main():
+    api_key = "your_api_key_here"  # Replace with your OpenWeatherMap API key
+    city_name = input("Enter city name: ")
+    
+    weather_data = get_weather(city_name, api_key)
+    print_weather(weather_data)
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab-button" data-tab="1">Tab 1</button>
-    <button class="tab-button" data-tab="2">Tab 2</button>
-    <button class="tab-button" data-tab="3">Tab 3</button>
+if __name__ == "__main__":
+    main()
+import sqlite3
 
-    <div class="tab-content" id="tab-1">This is content for Tab 1.</div>
-    <div class="tab-content" id="tab-2" style="display:none;">This is content for Tab 2.</div>
-    <div class="tab-content" id="tab-3" style="display:none;">This is content for Tab 3.</div>
-  </div>
+# Function to create the database table
+def create_db():
+    conn = sqlite3.connect('weather.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS weather_data (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        city TEXT,
+                        country TEXT,
+                        temperature REAL,
+                        humidity INTEGER,
+                        condition TEXT,
+                        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )''')
+    conn.commit()
+    conn.close()
 
-  <!-- Form Validation -->
-  <form id="signupForm">
-    <input type="text" id="name" placeholder="Name" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Sign Up</button>
-  </form>
+# Function to insert weather data into the database
+def insert_weather_to_db(data):
+    conn = sqlite3.connect('weather.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''INSERT INTO weather_data (city, country, temperature, humidity, condition)
+                      VALUES (?, ?, ?, ?, ?)''', 
+                   (data['city'], data['country'], data['temperature'], data['humidity'], data['condition']))
+    
+    conn.commit()
+    conn.close()
 
-  <script src="script.js"></script>
-</body>
-</html>
+# Main function to store data in the database after fetching from the API
+def main():
+    api_key = "your_api_key_here"  # Replace with your OpenWeatherMap API key
+    city_name = input("Enter city name: ")
+    
+    weather_data = get_weather(city_name, api_key)
+    
+    if weather_data:
+        print_weather(weather_data)
+        
+        # Insert weather data into the SQLite database
+        insert_weather_to_db(weather_data)
+        print("Weather data saved to the database.")
+    else:
+        print("City not found or invalid API request.")
 
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 30px;
-}
-
-button {
-  padding: 10px 20px;
-  margin: 10px;
-  cursor: pointer;
-}
-
-.gallery img {
-  width: 300px;
-  height: auto;
-  transition: transform 0.5s;
-}
-
-.gallery img:hover {
-  transform: scale(1.1);
-}
-
-.tabs {
-  margin-top: 20px;
-}
-
-.tab-button {
-  padding: 10px;
-}
-
-.tab-content {
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-input {
-  display: block;
-  margin: 10px auto;
-  padding: 8px;
-  width: 200px;
-}
-
-// Event Handling
-const magicButton = document.getElementById('magicButton');
-magicButton.addEventListener('click', () => {
-  magicButton.textContent = "You clicked me!";
-  magicButton.style.backgroundColor = "#4CAF50";
-});
-
-// Hover Effect on Image (already handled in CSS)
-
-// Keypress Detection
-document.addEventListener('keydown', (e) => {
-  console.log(`You pressed: ${e.key}`);
-});
-
-// Bonus: Double Click Secret Action
-magicButton.addEventListener('dblclick', () => {
-  alert('✨ Secret double-click action unlocked!');
-});
-
-// Image Gallery Logic
-const galleryImage = document.getElementById('galleryImage');
-const galleryImages = [
-  "https://via.placeholder.com/300",
-  "https://via.placeholder.com/300/ff7f7f",
-  "https://via.placeholder.com/300/7fffd4"
-];
-let currentImage = 0;
-
-galleryImage.addEventListener('click', () => {
-  currentImage = (currentImage + 1) % galleryImages.length;
-  galleryImage.src = galleryImages[currentImage];
-});
-
-// Tabs
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const tab = button.getAttribute('data-tab');
-
-    tabContents.forEach(content => {
-      content.style.display = 'none';
-    });
-
-    document.getElementById(`tab-${tab}`).style.display = 'block';
-  });
-});
-
-// Form Validation
-const form = document.getElementById('signupForm');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault(); // Prevent form submission
-
-  const emailValid = emailInput.value.includes('@');
-  const passwordValid = passwordInput.value.length >= 8;
-
-  if (!emailValid) {
-    alert('Please enter a valid email.');
-    return;
-  }
-
-  if (!passwordValid) {
-    alert('Password must be at least 8 characters long.');
-    return;
-  }
-
-  alert('Form submitted successfully!');
-});
-
-// Real-time feedback for password
-passwordInput.addEventListener('input', () => {
-  if (passwordInput.value.length < 8) {
-    passwordInput.style.borderColor = 'red';
-  } else {
-    passwordInput.style.borderColor = 'green';
-  }
-});
+if __name__ == "__main__":
+    create_db()  # Create the database if it doesn't exist
+    main()
+python weather_app.py
