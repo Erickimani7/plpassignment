@@ -1,100 +1,44 @@
-import requests
+// Standard function with optional tax parameter
+double calculateTotal(List<double> prices, {double taxRate = 0.0}) {
+  double subtotal = prices.reduce((a, b) => a + b);
+  double tax = subtotal * taxRate;
+  return subtotal + tax;
+}
 
-# Function to fetch weather data from OpenWeatherMap API
-def get_weather(city_name, api_key):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&units=metric"
-    
-    # Send GET request to the OpenWeatherMap API
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        data = response.json()
-        
-        # Extracting relevant weather details
-        city = data["name"]
-        country = data["sys"]["country"]
-        temperature = data["main"]["temp"]
-        humidity = data["main"]["humidity"]
-        condition = data["weather"][0]["description"]
-        
-        return {
-            "city": city,
-            "country": country,
-            "temperature": temperature,
-            "humidity": humidity,
-            "condition": condition
-        }
-    else:
-        return None
+// Higher-order function: applies a discount function to each price
+List<double> applyDiscount(List<double> prices, double Function(double) discountFunction) {
+  return prices.map((price) => discountFunction(price)).toList();
+}
 
-# Function to print the weather data
-def print_weather(data):
-    if data:
-        print(f"Weather in {data['city']}, {data['country']}:")
-        print(f"Temperature: {data['temperature']}°C")
-        print(f"Humidity: {data['humidity']}%")
-        print(f"Condition: {data['condition']}")
-    else:
-        print("City not found or invalid API request.")
+// Recursive function to calculate factorial-based discount percentage
+int calculateFactorialDiscount(int n) {
+  if (n <= 1) return 1;
+  return n * calculateFactorialDiscount(n - 1);
+}
 
-# Main program to interact with the user
-def main():
-    api_key = "your_api_key_here"  # Replace with your OpenWeatherMap API key
-    city_name = input("Enter city name: ")
-    
-    weather_data = get_weather(city_name, api_key)
-    print_weather(weather_data)
+void main() {
+  // Initial list of item prices
+  List<double> cart = [5.0, 12.0, 7.5, 20.0, 15.0];
 
-if __name__ == "__main__":
-    main()
-import sqlite3
+  // Anonymous function to filter out items below $10
+  List<double> filteredCart = cart.where((price) => price >= 10.0).toList();
+  print('Filtered Cart (Items >= \$10): $filteredCart');
 
-# Function to create the database table
-def create_db():
-    conn = sqlite3.connect('weather.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''CREATE TABLE IF NOT EXISTS weather_data (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        city TEXT,
-                        country TEXT,
-                        temperature REAL,
-                        humidity INTEGER,
-                        condition TEXT,
-                        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )''')
-    conn.commit()
-    conn.close()
+  // Discount function: reduce price by 10%
+  double discountRate = 0.10;
+  List<double> discountedCart = applyDiscount(filteredCart, (price) => price * (1 - discountRate));
+  print('Discounted Cart (10% off): $discountedCart');
 
-# Function to insert weather data into the database
-def insert_weather_to_db(data):
-    conn = sqlite3.connect('weather.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''INSERT INTO weather_data (city, country, temperature, humidity, condition)
-                      VALUES (?, ?, ?, ?, ?)''', 
-                   (data['city'], data['country'], data['temperature'], data['humidity'], data['condition']))
-    
-    conn.commit()
-    conn.close()
+  // Calculate total with 5% tax
+  double totalWithTax = calculateTotal(discountedCart, taxRate: 0.05);
+  print('Total with Tax: \$${totalWithTax.toStringAsFixed(2)}');
 
-# Main function to store data in the database after fetching from the API
-def main():
-    api_key = "your_api_key_here"  # Replace with your OpenWeatherMap API key
-    city_name = input("Enter city name: ")
-    
-    weather_data = get_weather(city_name, api_key)
-    
-    if weather_data:
-        print_weather(weather_data)
-        
-        # Insert weather data into the SQLite database
-        insert_weather_to_db(weather_data)
-        print("Weather data saved to the database.")
-    else:
-        print("City not found or invalid API request.")
+  // Apply factorial discount based on number of items
+  int itemCount = discountedCart.length;
+  int factorialDiscountPercent = calculateFactorialDiscount(itemCount);
+  double specialDiscount = totalWithTax * (factorialDiscountPercent / 100);
+  double finalTotal = totalWithTax - specialDiscount;
 
-if __name__ == "__main__":
-    create_db()  # Create the database if it doesn't exist
-    main()
-python weather_app.py
+  print('Factorial Discount (${itemCount}! = $factorialDiscountPercent%): -\$${specialDiscount.toStringAsFixed(2)}');
+  print('Final Total after Special Discount: \$${finalTotal.toStringAsFixed(2)}');
+}
